@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\UlasanController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,25 @@ Route::post('/buku/{buku}/ulasan', [UlasanController::class, 'store'])
     ->whereNumber('buku')
     ->middleware(['auth', 'active'])
     ->name('buku.ulasan.store');
+
+// Borrowing routes for users (auth, active, role:user)
+Route::get('/buku/{buku}/pinjam', [PeminjamanController::class, 'confirm'])
+    ->whereNumber('buku')
+    ->middleware(['auth', 'active', 'role:user'])
+    ->name('buku.pinjam.confirm');
+
+Route::post('/peminjaman', [PeminjamanController::class, 'store'])
+    ->middleware(['auth', 'active', 'role:user'])
+    ->name('peminjaman.store');
+
+Route::get('/peminjaman', [PeminjamanController::class, 'index'])
+    ->middleware(['auth', 'active', 'role:user'])
+    ->name('peminjaman.index');
+
+Route::get('/peminjaman/{peminjaman}', [PeminjamanController::class, 'show'])
+    ->whereNumber('peminjaman')
+    ->middleware(['auth', 'active'])
+    ->name('peminjaman.show');
 
 // Authentication routes
 Route::get('/registrasi', [RegisterController::class, 'create'])

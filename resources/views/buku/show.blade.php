@@ -84,20 +84,15 @@
                     </a>
                 @else
                     @if (auth()->user()->role === 'user')
-                        <form method="POST" action="{{ url('/peminjaman') }}">
-                            @csrf
-                            <input type="hidden" name="buku_id" value="{{ $buku->id }}">
-                            <button
-                                type="submit"
-                                @if ($buku->stok_tersedia <= 0) disabled @endif
-                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium text-sm transition shadow-sm {{ $buku->stok_tersedia > 0 ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-slate-400 cursor-not-allowed opacity-60' }}"
-                            >
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                </svg>
-                                <span>Pinjam Buku</span>
-                            </button>
-                        </form>
+                        <a
+                            href="{{ route('buku.pinjam.confirm', $buku) }}"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium text-sm transition shadow-sm {{ $buku->stok_tersedia > 0 ? 'bg-emerald-600 hover:bg-emerald-700 cursor-pointer' : 'bg-slate-400 cursor-not-allowed opacity-60 pointer-events-none' }}"
+                        >
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            <span>Pinjam Buku</span>
+                        </a>
                     @else
                         <span class="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
                             Mode Administrator (Peminjaman hanya untuk akun Anggota)

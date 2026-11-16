@@ -81,6 +81,7 @@ Hal-hal berikut berada di luar cakupan proyek:
 | **Basis Data** | SQLite 3 | Built-in PHP PDO SQLite, isolasi file lokal | Disimpan di luar direktori web (`database/database.sqlite`), WAL enabled |
 | **Web Server / Proxy** | Nginx + PHP-FPM | Nginx mainline/stable, Unix domain socket FastCGI | Document root strictly `/public`, penolakan akses dotfiles & sqlite |
 | **Template Engine** | Blade | Bawaan Laravel, auto-escaping `{{ }}` | Contextual HTML escaping aktif secara default |
+| **Icon Library** | Blade Icons | [Blade Icons](https://blade-ui-kit.com/blade-icons) | Standar icon SVG pada Blade view jika fitur memerlukan icon |
 | **Kriptografi Password** | Bcrypt (`Hash::make`) | Standar default Laravel, salt unik otomatis | Cost factor default 12, validasi panjang 8–72 byte |
 | **Kriptografi Data** | AES-256-GCM (`openssl_encrypt`) | Standar OpenSSL AEAD | Key 32 byte base64 via .env, nonce 12 byte unik, tag 16 byte, AAD anggota |
 | **Firewall** | UFW (Uncomplicated Firewall) | Bawaan Ubuntu Server | Policy incoming default deny, outgoing allow, rate limit SSH |

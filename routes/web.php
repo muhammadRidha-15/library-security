@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\BookController as AdminBookController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookController;
@@ -9,6 +11,25 @@ use App\Http\Controllers\UlasanController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/buku');
+
+// Admin panel routes (auth, active, role:admin)
+Route::prefix('admin')
+    ->middleware(['auth', 'active', 'role:admin'])
+    ->group(function () {
+        Route::redirect('/', '/admin/ringkasan');
+        Route::get('/ringkasan', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+
+        // CRUD Buku
+        Route::get('/buku', [AdminBookController::class, 'index'])->name('admin.buku.index');
+        Route::get('/buku/create', [AdminBookController::class, 'create'])->name('admin.buku.create');
+        Route::post('/buku', [AdminBookController::class, 'store'])->name('admin.buku.store');
+        Route::get('/buku/{buku}', [AdminBookController::class, 'show'])->whereNumber('buku')->name('admin.buku.show');
+        Route::get('/buku/{buku}/edit', [AdminBookController::class, 'edit'])->whereNumber('buku')->name('admin.buku.edit');
+        Route::patch('/buku/{buku}', [AdminBookController::class, 'update'])->whereNumber('buku')->name('admin.buku.update');
+        Route::patch('/buku/{buku}/arsip', [AdminBookController::class, 'archive'])->whereNumber('buku')->name('admin.buku.archive');
+        Route::patch('/buku/{buku}/pulihkan', [AdminBookController::class, 'restore'])->whereNumber('buku')->name('admin.buku.restore');
+        Route::delete('/buku/{buku}', [AdminBookController::class, 'destroy'])->whereNumber('buku')->name('admin.buku.destroy');
+    });
 
 // Public catalog routes
 Route::get('/buku', [BookController::class, 'index'])->name('buku.index');

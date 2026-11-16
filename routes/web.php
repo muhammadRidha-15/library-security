@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\CirculationController as AdminCirculationController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MemberController as AdminMemberController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookController;
@@ -47,6 +48,10 @@ Route::prefix('admin')
         Route::post('/peminjaman', [AdminCirculationController::class, 'store'])->name('admin.peminjaman.store');
         Route::get('/peminjaman/{peminjaman}', [AdminCirculationController::class, 'show'])->whereNumber('peminjaman')->name('admin.peminjaman.show');
         Route::patch('/peminjaman/{peminjaman}/pengembalian', [AdminCirculationController::class, 'returnBook'])->whereNumber('peminjaman')->name('admin.peminjaman.pengembalian');
+
+        // Moderasi Ulasan (FR-15)
+        Route::get('/ulasan', [AdminReviewController::class, 'index'])->name('admin.ulasan.index');
+        Route::delete('/ulasan/{ulasan}', [AdminReviewController::class, 'destroy'])->whereNumber('ulasan')->name('admin.ulasan.destroy');
     });
 
 // Public catalog routes

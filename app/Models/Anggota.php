@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class Anggota extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+
+    protected $table = 'anggota';
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +18,12 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nama',
         'email',
         'password',
+        'role',
+        'is_active',
+        'telepon_enc',
     ];
 
     /**
@@ -41,8 +44,24 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            'is_active' => 'boolean',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the loans associated with the member.
+     */
+    public function peminjaman(): HasMany
+    {
+        return $this->hasMany(Peminjaman::class, 'anggota_id');
+    }
+
+    /**
+     * Get the reviews written by the member.
+     */
+    public function ulasan(): HasMany
+    {
+        return $this->hasMany(Ulasan::class, 'anggota_id');
     }
 }

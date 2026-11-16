@@ -27,6 +27,7 @@
                 </a>
             </div>
             <nav class="flex items-center gap-4 text-sm font-medium">
+                <a href="{{ route('buku.index') }}" class="text-slate-600 hover:text-emerald-600 transition">Katalog</a>
                 @auth
                     <span class="text-slate-600">{{ auth()->user()->nama }}</span>
                     @if (Route::has('logout'))
@@ -48,7 +49,7 @@
     </header>
 
     <main class="grow py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md mx-auto">
+        <div class="@yield('container-class', 'max-w-7xl') mx-auto">
             @if (session('success'))
                 <div class="mb-6 p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-start gap-3" role="alert">
                     <svg class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

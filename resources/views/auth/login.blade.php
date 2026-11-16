@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('container-class', 'max-w-md')
+
 @section('content')
 <div class="bg-white py-8 px-6 shadow-sm rounded-xl border border-slate-200 sm:px-8">
     <div class="mb-6 text-center">

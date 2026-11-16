@@ -2,11 +2,17 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect('/', '/buku');
+
+// Public catalog routes
+Route::get('/buku', [BookController::class, 'index'])->name('buku.index');
+Route::get('/buku/cari', [BookController::class, 'search'])->name('buku.cari');
+Route::get('/buku/{buku}', [BookController::class, 'show'])
+    ->whereNumber('buku')
+    ->name('buku.show');
 
 // Authentication routes
 Route::get('/registrasi', [RegisterController::class, 'create'])

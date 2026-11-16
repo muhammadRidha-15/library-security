@@ -47,4 +47,32 @@ class PeminjamanService
             ]);
         });
     }
+
+    /**
+     * Memproses pengembalian buku secara atomik dan idempoten (FR-14).
+     *
+     * @throws HttpException
+     */
+    public function kembalikan(Peminjaman $peminjaman): Peminjaman
+    {
+        return DB::transaction(function () use ($peminjaman) {
+            // Cek idempoten: jika sudah kembali, tolak dengan 409 Konflik
+            if ($peminjaman->status === 'kembali') {
+                abort(409, 'Buku ini sudah dikembalikan sebelumnya.');
+            }
+
+            // Update status peminjaman dan waktu pengembalian
+            $peminjaman->update([
+                'status' => 'kembali',
+                'dikembalikan_pada' => now(),
+            ]);
+
+            // Pulihkan stok buku (+1)
+            DB::table('buku')
+                ->where('id', $peminjaman->buku_id)
+                ->increment('stok_tersedia', 1);
+
+            return $peminjaman->fresh();
+        });
+    }
 }

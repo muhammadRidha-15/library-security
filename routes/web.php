@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BookController as AdminBookController;
+use App\Http\Controllers\Admin\CirculationController as AdminCirculationController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\Auth\LoginController;
@@ -39,6 +40,13 @@ Route::prefix('admin')
         Route::get('/anggota/{anggota}/edit', [AdminMemberController::class, 'edit'])->whereNumber('anggota')->name('admin.anggota.edit');
         Route::patch('/anggota/{anggota}', [AdminMemberController::class, 'update'])->whereNumber('anggota')->name('admin.anggota.update');
         Route::patch('/anggota/{anggota}/status', [AdminMemberController::class, 'toggleStatus'])->whereNumber('anggota')->name('admin.anggota.status');
+
+        // Sirkulasi Peminjaman & Pengembalian (FR-13, FR-14)
+        Route::get('/peminjaman', [AdminCirculationController::class, 'index'])->name('admin.peminjaman.index');
+        Route::get('/peminjaman/create', [AdminCirculationController::class, 'create'])->name('admin.peminjaman.create');
+        Route::post('/peminjaman', [AdminCirculationController::class, 'store'])->name('admin.peminjaman.store');
+        Route::get('/peminjaman/{peminjaman}', [AdminCirculationController::class, 'show'])->whereNumber('peminjaman')->name('admin.peminjaman.show');
+        Route::patch('/peminjaman/{peminjaman}/pengembalian', [AdminCirculationController::class, 'returnBook'])->whereNumber('peminjaman')->name('admin.peminjaman.pengembalian');
     });
 
 // Public catalog routes

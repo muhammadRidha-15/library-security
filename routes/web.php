@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookController;
@@ -29,6 +30,15 @@ Route::prefix('admin')
         Route::patch('/buku/{buku}/arsip', [AdminBookController::class, 'archive'])->whereNumber('buku')->name('admin.buku.archive');
         Route::patch('/buku/{buku}/pulihkan', [AdminBookController::class, 'restore'])->whereNumber('buku')->name('admin.buku.restore');
         Route::delete('/buku/{buku}', [AdminBookController::class, 'destroy'])->whereNumber('buku')->name('admin.buku.destroy');
+
+        // Manajemen Anggota (FR-12)
+        Route::get('/anggota', [AdminMemberController::class, 'index'])->name('admin.anggota.index');
+        Route::get('/anggota/create', [AdminMemberController::class, 'create'])->name('admin.anggota.create');
+        Route::post('/anggota', [AdminMemberController::class, 'store'])->name('admin.anggota.store');
+        Route::get('/anggota/{anggota}', [AdminMemberController::class, 'show'])->whereNumber('anggota')->name('admin.anggota.show');
+        Route::get('/anggota/{anggota}/edit', [AdminMemberController::class, 'edit'])->whereNumber('anggota')->name('admin.anggota.edit');
+        Route::patch('/anggota/{anggota}', [AdminMemberController::class, 'update'])->whereNumber('anggota')->name('admin.anggota.update');
+        Route::patch('/anggota/{anggota}/status', [AdminMemberController::class, 'toggleStatus'])->whereNumber('anggota')->name('admin.anggota.status');
     });
 
 // Public catalog routes

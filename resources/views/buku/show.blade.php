@@ -109,8 +109,8 @@
     </div>
 
     {{-- Reviews Section --}}
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-        <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
             <div>
                 <h3 class="text-lg font-bold text-slate-900">Ulasan Pembaca</h3>
                 <p class="text-xs text-slate-500 mt-0.5">Ulasan dan tanggapan dari para anggota perpustakaan.</p>
@@ -119,6 +119,51 @@
                 {{ $buku->ulasan->count() }} Ulasan
             </span>
         </div>
+
+        {{-- Form Tulis Ulasan (Canvas Node 02) --}}
+        @auth
+            @if (auth()->user()->is_active)
+                <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
+                    <h4 class="text-sm font-semibold text-slate-900 mb-2">Tulis Ulasan Anda</h4>
+                    <form method="POST" action="{{ route('buku.ulasan.store', $buku) }}" class="space-y-3">
+                        @csrf
+                        <div>
+                            <textarea
+                                name="isi"
+                                id="isi"
+                                rows="3"
+                                minlength="1"
+                                maxlength="2000"
+                                required
+                                placeholder="Bagikan pendapat Anda mengenai buku ini (maksimal 2.000 karakter)..."
+                                class="block w-full rounded-lg border @error('isi') border-red-500 @else border-slate-300 @enderror p-3 text-sm text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition"
+                            >{{ old('isi') }}</textarea>
+                            @error('isi')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="flex justify-end">
+                            <button
+                                type="submit"
+                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition cursor-pointer"
+                            >
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                                <span>Kirim Ulasan</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            @endif
+        @else
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center text-sm text-slate-600">
+                Ingin memberikan ulasan?
+                <a href="{{ route('login') }}" class="font-medium text-emerald-600 hover:text-emerald-700">Masuk ke akun</a>
+                atau
+                <a href="{{ route('register') }}" class="font-medium text-emerald-600 hover:text-emerald-700">daftar sekarang</a>.
+            </div>
+        @endauth
 
         @if ($buku->ulasan->isEmpty())
             <div class="text-center py-8">
@@ -129,9 +174,14 @@
                 @foreach ($buku->ulasan as $ulasan)
                     <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
                         <div class="flex items-center justify-between text-xs">
-                            <span class="font-semibold text-slate-800">
-                                {{ $ulasan->anggota->nama ?? 'Anggota Perpustakaan' }}
-                            </span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs uppercase">
+                                    {{ substr($ulasan->anggota->nama ?? 'A', 0, 1) }}
+                                </div>
+                                <span class="font-semibold text-slate-800">
+                                    {{ $ulasan->anggota->nama ?? 'Anggota Perpustakaan' }}
+                                </span>
+                            </div>
                             <span class="text-slate-500">
                                 {{ $ulasan->created_at ? $ulasan->created_at->format('d M Y, H:i') : '' }}
                             </span>

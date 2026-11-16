@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\UlasanController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/buku');
@@ -13,6 +14,12 @@ Route::get('/buku/cari', [BookController::class, 'search'])->name('buku.cari');
 Route::get('/buku/{buku}', [BookController::class, 'show'])
     ->whereNumber('buku')
     ->name('buku.show');
+
+// Reviews route (auth, active, csrf)
+Route::post('/buku/{buku}/ulasan', [UlasanController::class, 'store'])
+    ->whereNumber('buku')
+    ->middleware(['auth', 'active'])
+    ->name('buku.ulasan.store');
 
 // Authentication routes
 Route::get('/registrasi', [RegisterController::class, 'create'])

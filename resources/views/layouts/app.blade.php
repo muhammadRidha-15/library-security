@@ -29,6 +29,11 @@
             <nav class="flex items-center gap-4 text-sm font-medium">
                 <a href="{{ route('buku.index') }}" class="text-slate-600 hover:text-emerald-600 transition">Katalog</a>
                 @auth
+                    @if (auth()->user()->role === 'user')
+                        <a href="{{ route('peminjaman.index') }}" class="text-slate-600 hover:text-emerald-600 transition">Peminjaman Saya</a>
+                    @elseif (auth()->user()->role === 'admin')
+                        <a href="{{ url('/admin/buku') }}" class="text-slate-600 hover:text-emerald-600 transition">Panel Admin</a>
+                    @endif
                     <span class="text-slate-600">{{ auth()->user()->nama }}</span>
                     @if (Route::has('logout'))
                         <form method="POST" action="{{ route('logout') }}" class="inline">

@@ -34,6 +34,8 @@
                     @elseif (auth()->user()->role === 'admin')
                         <a href="{{ url('/admin/buku') }}" class="text-slate-600 hover:text-emerald-600 transition">Panel Admin</a>
                     @endif
+                    <a href="{{ route('profil.show') }}" class="text-slate-600 hover:text-emerald-600 transition">Profil</a>
+                    <span class="text-slate-400 font-normal">|</span>
                     <span class="text-slate-600">{{ auth()->user()->nama }}</span>
                     @if (Route::has('logout'))
                         <form method="POST" action="{{ route('logout') }}" class="inline">

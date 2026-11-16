@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UlasanController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,15 @@ Route::post('/buku/{buku}/ulasan', [UlasanController::class, 'store'])
     ->whereNumber('buku')
     ->middleware(['auth', 'active'])
     ->name('buku.ulasan.store');
+
+// Profile routes (auth, active)
+Route::get('/profil', [ProfileController::class, 'show'])
+    ->middleware(['auth', 'active'])
+    ->name('profil.show');
+
+Route::patch('/profil/telepon', [ProfileController::class, 'updateTelepon'])
+    ->middleware(['auth', 'active'])
+    ->name('profil.telepon.update');
 
 // Borrowing routes for users (auth, active, role:user)
 Route::get('/buku/{buku}/pinjam', [PeminjamanController::class, 'confirm'])

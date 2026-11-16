@@ -46,6 +46,7 @@ class Anggota extends Authenticatable
         return [
             'is_active' => 'boolean',
             'password' => 'hashed',
+            'telepon_enc' => 'array',
         ];
     }
 

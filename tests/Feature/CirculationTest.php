@@ -5,12 +5,32 @@ namespace Tests\Feature;
 use App\Models\Anggota;
 use App\Models\Buku;
 use App\Models\Peminjaman;
+use App\Services\PeminjamanService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
 
 class CirculationTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_return_rejects_a_stale_loan_snapshot(): void
+    {
+        $loan = Peminjaman::where('status', 'dipinjam')->first();
+        $stale = Peminjaman::findOrFail($loan->id);
+        $book = $loan->buku;
+        $stock = $book->stok_tersedia;
+        $service = app(PeminjamanService::class);
+        $service->kembalikan($loan);
+
+        try {
+            $service->kembalikan($stale);
+            $this->fail('Pengembalian kedua harus ditolak.');
+        } catch (HttpException $exception) {
+            $this->assertSame(409, $exception->getStatusCode());
+        }
+        $this->assertSame($stock + 1, $book->fresh()->stok_tersedia);
+    }
 
     protected function setUp(): void
     {
@@ -52,7 +72,7 @@ class CirculationTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.peminjaman.show', $loan));
 
         $response->assertOk();
-        $response->assertSee('Detail Peminjaman #' . $loan->id);
+        $response->assertSee('Detail Peminjaman #'.$loan->id);
         $response->assertSee($loan->buku->judul);
         $response->assertSee($loan->anggota->nama);
     }

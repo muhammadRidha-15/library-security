@@ -25,7 +25,17 @@ class StoreMemberRequest extends FormRequest
         return [
             'nama' => ['required', 'string', 'min:2', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:anggota,email'],
-            'password' => ['required', 'string', 'min:12', 'max:72'],
+            'password' => [
+                'required',
+                'string',
+                'min:12',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    // SEC-02: Bcrypt truncates silently at 72 bytes. Enforce strict UTF-8 byte limit.
+                    if (is_string($value) && strlen($value) > 72) {
+                        $fail('Kata sandi tidak boleh melebihi 72 byte.');
+                    }
+                },
+            ],
             'telepon' => ['nullable', 'string', 'regex:/^(\+?[0-9]{8,15})?$/'],
         ];
     }

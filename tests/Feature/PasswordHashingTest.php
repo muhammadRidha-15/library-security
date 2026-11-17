@@ -71,8 +71,8 @@ class PasswordHashingTest extends TestCase
         $userB = Anggota::where('email', 'user_b@perpustakaan.test')->firstOrFail();
 
         // Password benar harus lolos
-        $this->assertTrue(Hash::check(DatabaseSeeder::USER_PASSWORD, $userA->password));
-        $this->assertTrue(Hash::check(DatabaseSeeder::USER_PASSWORD, $userB->password));
+        $this->assertTrue(Hash::check(config('security.seed_user_password'), $userA->password));
+        $this->assertTrue(Hash::check(config('security.seed_user_password'), $userB->password));
 
         // Password salah harus ditolak
         $this->assertFalse(Hash::check('WrongPassword999!', $userA->password));
@@ -118,7 +118,7 @@ class PasswordHashingTest extends TestCase
 
         $json = $userA->toJson();
         $this->assertStringNotContainsString('password', $json);
-        $this->assertStringNotContainsString(DatabaseSeeder::USER_PASSWORD, $json);
+        $this->assertStringNotContainsString(config('security.seed_user_password'), $json);
         $this->assertStringNotContainsString($userA->password, $json);
     }
 
@@ -173,5 +173,53 @@ class PasswordHashingTest extends TestCase
         $this->assertSame(3, Buku::count());
         $this->assertSame(2, Peminjaman::count());
         $this->assertSame(2, Ulasan::count());
+    }
+
+    public function test_reseeding_preserves_existing_accounts_and_transactions(): void
+    {
+        $user = Anggota::where('email', 'user_a@perpustakaan.test')->firstOrFail();
+        $loan = Peminjaman::where('anggota_id', $user->id)->firstOrFail();
+        $book = $loan->buku;
+        $hash = $user->password;
+        $user->update(['nama' => 'Nama yang diubah']);
+        $book->update(['stok_tersedia' => 1]);
+        $loan->update(['status' => 'kembali', 'dikembalikan_pada' => now()]);
+
+        $this->seed(DatabaseSeeder::class);
+
+        $this->assertSame('Nama yang diubah', $user->fresh()->nama);
+        $this->assertSame($hash, $user->fresh()->password);
+        $this->assertSame(1, $book->fresh()->stok_tersedia);
+        $this->assertSame('kembali', $loan->fresh()->status);
+        $this->assertSame(2, Peminjaman::count());
+    }
+
+    public function test_seeder_refuses_production_before_modifying_data(): void
+    {
+        $count = Anggota::count();
+        $environment = app()->environment();
+        app()->detectEnvironment(fn () => 'production');
+        try {
+            (new DatabaseSeeder)->run();
+            $this->fail('Seeder harus menolak production.');
+        } catch (\RuntimeException $exception) {
+            $this->assertStringContainsString('production', $exception->getMessage());
+            $this->assertSame($count, Anggota::count());
+        } finally {
+            app()->detectEnvironment(fn () => $environment);
+        }
+    }
+
+    public function test_seeder_rejects_missing_password_without_modifying_data(): void
+    {
+        $count = Anggota::count();
+        config(['security.seed_user_password' => null]);
+        try {
+            $this->seed(DatabaseSeeder::class);
+            $this->fail('Seeder harus menolak password yang kosong.');
+        } catch (\RuntimeException $exception) {
+            $this->assertStringContainsString('Password fixture', $exception->getMessage());
+            $this->assertSame($count, Anggota::count());
+        }
     }
 }

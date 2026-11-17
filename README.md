@@ -1,66 +1,125 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Perpustakaan Mini — Aplikasi Web yang Diamankan di Server Linux
+**Project Pengganti UTS — Keamanan Sistem Komputer (S1 Teknik Informatika)**
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## 1. Identitas Mahasiswa dan Penugasan
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Nama Mahasiswa:** Muhammad Ridha
+- **NIM:** 230170010
+- **Digit Terakhir NIM:** `0` (Tema: **Perpustakaan**)
+  - Tabel Data Utama: `buku`, `anggota`, `peminjaman` (+ tabel pendukung `ulasan`)
+  - Data Sensitif Terenkripsi (Syarat 3): **Nomor telepon anggota** (`telepon_enc` via AES-256-GCM)
+  - Data Terproteksi IDOR (Syarat 10): **Riwayat dan detail peminjaman anggota lain** (`/peminjaman/{id}`)
+- **Target Deployment:** VM Ubuntu 24.04 LTS (Noble Numbat) pada jaringan Host-Only (`192.168.56.10:443`)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 2. Tech Stack & Environment Baseline
 
-## Learning Laravel
+| Komponen | Spesifikasi | Catatan Implementasi |
+|---|---|---|
+| **Sistem Operasi VM** | Ubuntu 24.04 LTS | Host-only network (Host: `192.168.56.1`, VM: `192.168.56.10`) |
+| **Runtime Bahasa** | PHP 8.3 (CLI & FPM) | Ekstensi aktif: `pdo_sqlite`, `openssl`, `mbstring`, `tokenizer`, `xml`, `ctype`, `curl` |
+| **Web Framework** | Laravel 12 (Skeleton Murni) | **Tanpa starter kit** (Breeze/Jetstream dilarang; auth manual) |
+| **Basis Data** | SQLite 3 | Tersimpan di `database/database.sqlite`; WAL enabled; FK constraint aktif |
+| **Web Server / Reverse Proxy** | Nginx + PHP-FPM | Root strictly `/public`; blokir dotfiles, `.env`, backup, dan SQLite |
+| **Firewall** | UFW (Uncomplicated Firewall) | Policy: `default deny incoming`, allow SSH (22) dan HTTPS (443) |
+| **Pengujian** | PHPUnit 11 | In-memory SQLite untuk unit test, file SQLite terpisah untuk integrasi |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 3. Daftar Akun Uji Fiktif (Demo)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Seluruh akun fiktif disiapkan secara otomatis melalui `DatabaseSeeder`:
 
-## Laravel Sponsors
+| Role | Nama | Alamat Email | Fungsi Pengujian |
+|---|---|---|---|
+| **Admin** | Admin Perpustakaan | `admin@perpustakaan.test` | Mengelola katalog buku, verifikasi anggota, sirkulasi peminjaman/pengembalian, dan moderasi ulasan |
+| **User A** | User A | `user_a@perpustakaan.test` | Anggota biasa: pinjam buku, ulasan escaped, update telepon terenkripsi AES-GCM, verifikasi IDOR |
+| **User B** | User B | `user_b@perpustakaan.test` | Anggota biasa kedua: pembuktian salt unik (password sama menghasilkan hash berbeda) dan target uji IDOR |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+> [!important]
+> Password akun demo disuplai melalui environment variable (`SEED_USER_PASSWORD` dan `SEED_ADMIN_PASSWORD`) atau konfigurasi lokal `.env`. Tidak ada password plaintext yang dicatat permanen dalam repositori Git publik.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 4. Panduan Menjalankan Aplikasi
 
-## Contributing
+### A. Persiapan Lingkungan Lokal (Pengembangan & Testing)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **Clone Repositori:**
+   ```bash
+   git clone <url-repo-anda> library_UTS
+   cd library_UTS
+   ```
 
-## Code of Conduct
+2. **Instal Dependensi:**
+   ```bash
+   composer install
+   npm install && npm run build
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. **Konfigurasi Berkas Lingkungan (`.env`):**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-## Security Vulnerabilities
+4. **Generate Kunci Enkripsi Telepon (AES-256-GCM 32 Byte Base64):**
+   ```bash
+   # Di Linux / Git Bash:
+   echo "TELEPON_KEY_V1=base64:$(openssl rand -base64 32)" >> .env
+   
+   # Di PowerShell:
+   $bytes = 1..32 | ForEach-Object { Get-Random -Minimum 0 -Maximum 256 }
+   Add-Content .env "TELEPON_KEY_V1=base64:$([Convert]::ToBase64String($bytes))"
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5. **Inisialisasi Database SQLite & Seeder:**
+   ```bash
+   touch database/database.sqlite
+   php artisan migrate --seed
+   ```
 
-## License
+6. **Jalankan Seluruh Suite Pengujian (PHPUnit):**
+   ```bash
+   php artisan test
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+7. **Jalankan Server Lokal:**
+   ```bash
+   php artisan serve --host=127.0.0.1 --port=8000
+   ```
+
+---
+
+## 5. Perbedaan Cabang Aman (`main`) vs Cabang Rentan (`vulnerable`)
+
+Proyek ini memisahkan secara ketat versi produksi yang aman dengan versi demonstrasi kerentanan:
+
+| Aspek | Cabang `main` (Aman / Penilaian Resmi) | Cabang `vulnerable` (Khusus Demonstrasi Lab) |
+|---|---|---|
+| **Tujuan** | Implementasi aman memenuhi 10 Syarat Keamanan dosen | Membuktikan keberadaan eksploit sebelum dilakukan mitigasi |
+| **Jaringan & Host** | Host-only HTTPS (`https://192.168.56.10:443`) | **HANYA Loopback Localhost `http://127.0.0.1:8001`** |
+| **Basis Data** | `database/database.sqlite` | `database/vulnerable.sqlite` (terpisah) |
+| **Sesi & Cookie** | Cookie `mini_library_session` (Secure, HttpOnly, SameSite=Lax) | Cookie `mini_library_vuln_session` (tanpa atribut keamanan) |
+| **Syarat 8 (SQLi)** | Parameter binding via Query Builder / Eloquent; payload `' OR 1=1 -- ` dianggap literal string | Penggabungan string SQL mentah pada `/buku/cari?q=`; payload membocorkan seluruh buku |
+| **Syarat 9 (XSS)** | Blade contextual escaping `{{ }}` & CSP header aktif; skrip dirender sebagai teks entitas | Penggunaan render mentah tanpa sanitasi; skrip `<script>alert('XSS')</script>` memicu popup dialog |
+| **Syarat 10 (IDOR)** | Server-side policy `PeminjamanPolicy::view`; akses silang ditolak aman dengan respons `404 Not Found` | URL IDOR `/peminjaman/{id}` tanpa otorisasi pemilik; user A bebas membaca peminjaman user B |
+| **Aturan Isolasi** | Evaluasi resmi dosen | **Dilarang bind 0.0.0.0, dilarang reverse proxy Nginx** |
+
+---
+
+## 6. Ringkasan Implementasi 10 Syarat Keamanan
+
+- **Syarat 1 (Tabel Risiko):** Analisis 5 aset, 5 risiko (Confidentiality, Integrity, Availability), kontrol terhubung minimal 5 syarat, dan backup korektif di `docs/tabel-risiko.md`.
+- **Syarat 2 (Password Hashing):** Menggunakan `Hash::make()` Bcrypt (default cost 12), validasi password minimal 12 karakter dan maksimal 72 byte UTF-8. Dua akun demo memiliki password sama dengan hash berbeda.
+- **Syarat 3 (Enkripsi AES-256-GCM):** Enkripsi nomor telepon anggota via `App\Services\AesGcm.php` menggunakan kunci 256-bit di `.env`, nonce 12 byte acak per enkripsi, tag autentikasi 16 byte, dan AAD terikat identitas anggota (`anggota:{id}:telepon:v1`).
+- **Syarat 4 (Transport Security HTTPS):** Nginx port 443 dengan sertifikat self-signed, SAN IP `192.168.56.10` dan domain `mini-library.test`, TLS 1.2 & 1.3, izin private key `600`, port 80 redirect ke HTTPS.
+- **Syarat 5 (Hardening Linux):** Akun admin non-root sudoer `ridha0010`, worker `www-data` tanpa shell login, izin file rahasia `600`, SSH `PermitRootLogin no` & `MaxAuthTries 3`, `APP_DEBUG=false`.
+- **Syarat 6 (Firewall UFW Default Deny):** Kebijakan default deny incoming, membuka port 22 (SSH) dan port 443 (HTTPS) hanya dari IP host lab (`192.168.56.1`), diverifikasi dengan nmap sebelum vs sesudah.
+- **Syarat 7 (Backup & Restore Terverifikasi):** Script cron harian mengeksekusi backup SQLite konsisten (SQLite Online Backup API), enkripsi arsip via OpenSSL, pencatatan checksum SHA-256, dan verifikasi restore terisolasi.
+- **Syarat 8 (Pencegahan SQLi):** Seluruh kueri katalog dan transaksi menggunakan parameter binding Eloquent.
+- **Syarat 9 (Pencegahan XSS):** Kontekstual output escaping bawaan Blade `{{ }}` pada seluruh input teks ulasan dan header Content Security Policy (CSP).
+- **Syarat 10 (Pencegahan IDOR & Pengamanan Sesi):** Otorisasi kepemilikan data di server via `PeminjamanPolicy`, cookie sesi `Secure`, `HttpOnly`, `SameSite=Lax`, rotasi ID sesi saat login, dan invalidasi sesi total saat logout.

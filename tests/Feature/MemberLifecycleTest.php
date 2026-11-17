@@ -74,6 +74,34 @@ class MemberLifecycleTest extends TestCase
         $this->assertSame($phoneInput, $decrypted);
     }
 
+    public function test_admin_create_member_rejects_password_over_72_bytes(): void
+    {
+        $admin = Anggota::where('role', 'admin')->first();
+
+        // 73 ASCII characters (73 bytes)
+        $password73Bytes = str_repeat('a', 73);
+
+        $response = $this->actingAs($admin)->post(route('admin.anggota.store'), [
+            'nama' => 'User Over Bytes',
+            'email' => 'overbytes@perpustakaan.test',
+            'password' => $password73Bytes,
+        ]);
+
+        $response->assertSessionHasErrors('password');
+        $this->assertDatabaseMissing('anggota', ['email' => 'overbytes@perpustakaan.test']);
+
+        // Multibyte characters (e.g. 20 4-byte characters = 80 bytes > 72 bytes)
+        $multibytePassword = str_repeat('🔒', 19); // 19 * 4 = 76 bytes > 72 bytes
+        $responseMb = $this->actingAs($admin)->post(route('admin.anggota.store'), [
+            'nama' => 'User Multibyte Over',
+            'email' => 'multibyte_over@perpustakaan.test',
+            'password' => $multibytePassword,
+        ]);
+
+        $responseMb->assertSessionHasErrors('password');
+        $this->assertDatabaseMissing('anggota', ['email' => 'multibyte_over@perpustakaan.test']);
+    }
+
     public function test_admin_can_update_member_info_and_phone(): void
     {
         $admin = Anggota::where('role', 'admin')->first();

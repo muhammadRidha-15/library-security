@@ -11,4 +11,6 @@ return [
     |
     */
     'telepon_key' => env('TELEPON_KEY_V1'),
+    'seed_user_password' => env('SEED_USER_PASSWORD'),
+    'seed_admin_password' => env('SEED_ADMIN_PASSWORD'),
 ];

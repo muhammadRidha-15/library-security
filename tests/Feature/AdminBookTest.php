@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Admin\BookController;
+use App\Http\Requests\Admin\UpdateBookRequest;
 use App\Models\Anggota;
 use App\Models\Buku;
 use App\Models\Peminjaman;
+use App\Services\PeminjamanService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -82,7 +85,7 @@ class AdminBookTest extends TestCase
         $book = Buku::whereNull('archived_at')->first();
 
         $response = $this->actingAs($admin)->patch(route('admin.buku.update', $book), [
-            'judul' => $book->judul . ' (Edisi Revisi)',
+            'judul' => $book->judul.' (Edisi Revisi)',
             'penulis' => $book->penulis,
             'deskripsi' => 'Deskripsi yang diperbarui oleh admin.',
             'stok_total' => $book->stok_total + 2,
@@ -93,6 +96,28 @@ class AdminBookTest extends TestCase
 
         $book->refresh();
         $this->assertStringContainsString('(Edisi Revisi)', $book->judul);
+    }
+
+    public function test_book_update_uses_stock_after_a_loan_with_a_stale_bound_model(): void
+    {
+        $admin = Anggota::where('role', 'admin')->first();
+        $member = Anggota::where('role', 'user')->first();
+        $book = Buku::whereNull('archived_at')->where('stok_tersedia', '>', 0)->first();
+        $initialStock = $book->stok_tersedia;
+        $this->actingAs($admin);
+
+        $request = UpdateBookRequest::create('/', 'PATCH', [
+            'judul' => $book->judul,
+            'penulis' => $book->penulis,
+            'stok_total' => $book->stok_total + 2,
+        ]);
+        $request->setContainer(app())->setRedirector(app('redirect'));
+        $request->validateResolved();
+        app(PeminjamanService::class)->pinjam($member, $book->id);
+
+        app(BookController::class)->update($request, $book);
+
+        $this->assertSame($initialStock + 1, $book->fresh()->stok_tersedia);
     }
 
     public function test_total_stock_cannot_be_set_lower_than_active_borrowed_count(): void

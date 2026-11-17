@@ -8,8 +8,10 @@ use App\Http\Requests\Admin\UpdateBookRequest;
 use App\Models\Buku;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class BookController extends Controller
@@ -123,33 +125,46 @@ class BookController extends Controller
         $validated = $request->validated();
         $newTotal = (int) $validated['stok_total'];
 
-        $borrowedCount = $buku->peminjaman()->where('status', 'dipinjam')->count();
-        $newAvailable = $newTotal - $borrowedCount;
+        $oldFoto = null;
+        $newFoto = null;
+        try {
+            DB::transaction(function () use ($request, $buku, $validated, $newTotal, &$oldFoto, &$newFoto) {
+                // SQLite obtains the write lock before reading stock or active loans.
+                DB::table('buku')->where('id', $buku->id)->update(['stok_total' => DB::raw('stok_total')]);
+                $buku->refresh();
+                $borrowedCount = $buku->peminjaman()->where('status', 'dipinjam')->count();
+                if ($newTotal < $borrowedCount) {
+                    throw ValidationException::withMessages(['stok_total' => 'Stok total tidak boleh lebih kecil dari jumlah buku yang sedang dipinjam.']);
+                }
 
-        $fotoPath = $buku->foto;
+                $fotoPath = $buku->foto;
+                if ($request->boolean('hapus_foto') || $request->hasFile('foto')) {
+                    $oldFoto = $fotoPath;
+                    $fotoPath = null;
+                }
+                if ($request->hasFile('foto')) {
+                    $newFoto = $request->file('foto')->store('covers', 'public');
+                    $fotoPath = $newFoto;
+                }
 
-        if ($request->boolean('hapus_foto')) {
-            if ($buku->foto && Storage::disk('public')->exists($buku->foto)) {
-                Storage::disk('public')->delete($buku->foto);
+                $buku->update([
+                    'judul' => $validated['judul'],
+                    'penulis' => $validated['penulis'],
+                    'deskripsi' => $validated['deskripsi'] ?? null,
+                    'foto' => $fotoPath,
+                    'stok_total' => $newTotal,
+                    'stok_tersedia' => $buku->stok_tersedia + $newTotal - $buku->stok_total,
+                ]);
+            });
+        } catch (\Throwable $exception) {
+            if ($newFoto) {
+                Storage::disk('public')->delete($newFoto);
             }
-            $fotoPath = null;
+            throw $exception;
         }
-
-        if ($request->hasFile('foto')) {
-            if ($buku->foto && Storage::disk('public')->exists($buku->foto)) {
-                Storage::disk('public')->delete($buku->foto);
-            }
-            $fotoPath = $request->file('foto')->store('covers', 'public');
+        if ($oldFoto) {
+            Storage::disk('public')->delete($oldFoto);
         }
-
-        $buku->update([
-            'judul' => $validated['judul'],
-            'penulis' => $validated['penulis'],
-            'deskripsi' => $validated['deskripsi'] ?? null,
-            'foto' => $fotoPath,
-            'stok_total' => $newTotal,
-            'stok_tersedia' => $newAvailable,
-        ]);
 
         return redirect()
             ->route('admin.buku.edit', $buku)

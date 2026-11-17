@@ -41,7 +41,7 @@ class PeminjamanService
                 'anggota_id' => $user->id,
                 'buku_id' => $bukuId,
                 'dipinjam_pada' => now(),
-                'jatuh_tempo' => now()->addDays(7),
+                'jatuh_tempo' => null,
                 'dikembalikan_pada' => null,
                 'status' => 'dipinjam',
             ]);
@@ -56,16 +56,18 @@ class PeminjamanService
     public function kembalikan(Peminjaman $peminjaman): Peminjaman
     {
         return DB::transaction(function () use ($peminjaman) {
-            // Cek idempoten: jika sudah kembali, tolak dengan 409 Konflik
-            if ($peminjaman->status === 'kembali') {
+            $affected = DB::table('peminjaman')
+                ->where('id', $peminjaman->id)
+                ->where('status', 'dipinjam')
+                ->update([
+                    'status' => 'kembali',
+                    'dikembalikan_pada' => now(),
+                    'updated_at' => now(),
+                ]);
+
+            if ($affected === 0) {
                 abort(409, 'Buku ini sudah dikembalikan sebelumnya.');
             }
-
-            // Update status peminjaman dan waktu pengembalian
-            $peminjaman->update([
-                'status' => 'kembali',
-                'dikembalikan_pada' => now(),
-            ]);
 
             // Pulihkan stok buku (+1)
             DB::table('buku')

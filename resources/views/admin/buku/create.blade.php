@@ -18,7 +18,7 @@
 
     {{-- Form Tambah Buku Canvas Node 11 --}}
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-        <form method="POST" action="{{ route('admin.buku.store') }}" class="space-y-5">
+        <form method="POST" action="{{ route('admin.buku.store') }}" enctype="multipart/form-data" class="space-y-5">
             @csrf
 
             {{-- Judul Buku --}}
@@ -57,6 +57,34 @@
                     class="block w-full rounded-xl border @error('penulis') border-red-500 @else border-slate-300 @enderror px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition"
                 >
                 @error('penulis')
+                    <p class="mt-1 text-xs text-red-600 font-medium">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Foto Sampul Buku (Opsional) --}}
+            <div>
+                <label for="foto" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Foto / Sampul Buku (Opsional)
+                </label>
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-20 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 shadow-xs">
+                        <img id="preview-foto" src="{{ asset('images/default-book-cover.svg') }}" alt="Preview" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1">
+                        <input
+                            type="file"
+                            name="foto"
+                            id="foto"
+                            accept="image/jpeg,image/png,image/jpg,image/webp"
+                            onchange="const file = this.files[0]; if (file) { document.getElementById('preview-foto').src = URL.createObjectURL(file); }"
+                            class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
+                        >
+                        <p class="mt-1.5 text-xs text-slate-400">
+                            Format: JPG, PNG, WEBP. Maksimal 2MB. Jika dikosongkan, menggunakan foto default perpustakaan.
+                        </p>
+                    </div>
+                </div>
+                @error('foto')
                     <p class="mt-1 text-xs text-red-600 font-medium">{{ $message }}</p>
                 @enderror
             </div>

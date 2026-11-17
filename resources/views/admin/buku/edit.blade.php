@@ -45,7 +45,7 @@
 
     {{-- Form Edit Buku --}}
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-        <form method="POST" action="{{ route('admin.buku.update', $buku) }}" class="space-y-5">
+        <form method="POST" action="{{ route('admin.buku.update', $buku) }}" enctype="multipart/form-data" class="space-y-5">
             @csrf
             @method('PATCH')
 
@@ -83,6 +83,42 @@
                     class="block w-full rounded-xl border @error('penulis') border-red-500 @else border-slate-300 @enderror px-4 py-2.5 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition"
                 >
                 @error('penulis')
+                    <p class="mt-1 text-xs text-red-600 font-medium">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Foto Sampul Buku (Opsional) --}}
+            <div>
+                <label for="foto" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Foto / Sampul Buku (Opsional)
+                </label>
+                <div class="flex items-start gap-4">
+                    <div class="w-20 h-28 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 shadow-xs">
+                        <img id="preview-foto" src="{{ $buku->foto_url }}" alt="Preview" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 space-y-2">
+                        <input
+                            type="file"
+                            name="foto"
+                            id="foto"
+                            accept="image/jpeg,image/png,image/jpg,image/webp"
+                            onchange="const file = this.files[0]; if (file) { document.getElementById('preview-foto').src = URL.createObjectURL(file); }"
+                            class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
+                        >
+                        <p class="text-xs text-slate-400">
+                            Pilih file baru jika ingin mengganti sampul (JPG, PNG, WEBP, maks 2MB).
+                        </p>
+                        @if ($buku->foto)
+                            <div class="pt-1 flex items-center gap-2">
+                                <label class="inline-flex items-center gap-2 text-xs text-red-600 cursor-pointer">
+                                    <input type="checkbox" name="hapus_foto" value="1" class="rounded border-slate-300 text-red-600 focus:ring-red-500">
+                                    <span>Hapus foto sampul saat ini (gunakan foto default perpustakaan)</span>
+                                </label>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                @error('foto')
                     <p class="mt-1 text-xs text-red-600 font-medium">{{ $message }}</p>
                 @enderror
             </div>

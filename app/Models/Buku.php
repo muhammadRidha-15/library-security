@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Buku extends Model
 {
@@ -21,6 +22,7 @@ class Buku extends Model
         'judul',
         'penulis',
         'deskripsi',
+        'foto',
         'stok_total',
         'stok_tersedia',
         'archived_at',
@@ -54,5 +56,27 @@ class Buku extends Model
     public function ulasan(): HasMany
     {
         return $this->hasMany(Ulasan::class, 'buku_id');
+    }
+
+    /**
+     * Get the public URL for book cover photo, fallback to default photo.
+     */
+    public function getFotoUrlAttribute(): string
+    {
+        if (! empty($this->foto)) {
+            if (str_starts_with($this->foto, 'http://') || str_starts_with($this->foto, 'https://')) {
+                return $this->foto;
+            }
+
+            if (str_starts_with($this->foto, 'images/')) {
+                return asset($this->foto);
+            }
+
+            if (Storage::disk('public')->exists($this->foto)) {
+                return asset('storage/' . $this->foto);
+            }
+        }
+
+        return asset('images/default-book-cover.svg');
     }
 }

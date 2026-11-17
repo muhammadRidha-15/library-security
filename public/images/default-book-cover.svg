@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+    <linearGradient id="spineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="70%" stop-color="#ffffff" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.4" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <pattern id="gridPattern" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.04" />
+    </pattern>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Cover Background -->
+  <rect width="600" height="800" rx="16" fill="url(#bgGrad)" />
+
+  <!-- Subtle grid texture -->
+  <rect width="600" height="800" rx="16" fill="url(#gridPattern)" />
+
+  <!-- Decorative geometric accents -->
+  <circle cx="500" cy="120" r="180" fill="#10b981" fill-opacity="0.06" filter="blur(40px)" />
+  <circle cx="120" cy="680" r="140" fill="#0ea5e9" fill-opacity="0.05" filter="blur(30px)" />
+
+  <!-- Outer frame border -->
+  <rect x="24" y="24" width="552" height="752" rx="12" fill="none" stroke="#334155" stroke-width="1.5" stroke-opacity="0.7" />
+  <rect x="32" y="32" width="536" height="736" rx="8" fill="none" stroke="#10b981" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="4 4" />
+
+  <!-- Left Book Spine Realistic Overlay -->
+  <rect x="0" y="0" width="36" height="800" rx="4" fill="url(#spineGrad)" />
+  <line x1="36" y1="0" x2="36" y2="800" stroke="#000000" stroke-width="2" stroke-opacity="0.5" />
+  <line x1="38" y1="0" x2="38" y2="800" stroke="#ffffff" stroke-width="1" stroke-opacity="0.1" />
+
+  <!-- Header Badge -->
+  <g transform="translate(300, 140)">
+    <rect x="-110" y="-18" width="220" height="36" rx="18" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.5" />
+    <text x="0" y="5" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="#34d399" letter-spacing="3">PERPUSTAKAAN</text>
+  </g>
+
+  <!-- Central Emblem / Book Icon -->
+  <g transform="translate(300, 340)" filter="url(#shadow)">
+    <circle cx="0" cy="0" r="80" fill="#1e293b" stroke="#334155" stroke-width="2" />
+    <circle cx="0" cy="0" r="68" fill="none" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.4" />
+    
+    <!-- Open Book Icon -->
+    <path d="M -36 -18 C -22 -26 -6 -24 0 -16 C 6 -24 22 -26 36 -18 L 36 24 C 22 16 6 18 0 24 C -6 18 -22 16 -36 24 Z" 
+          fill="#10b981" fill-opacity="0.2" stroke="#34d399" stroke-width="3" stroke-linejoin="round" />
+    <line x1="0" y1="-16" x2="0" y2="24" stroke="#34d399" stroke-width="3" stroke-linecap="round" />
+    <path d="M -30 -6 C -18 -12 -6 -10 0 -5" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M -30 6 C -18 0 -6 2 0 7" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M 30 -6 C 18 -12 6 -10 0 -5" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M 30 6 C 18 0 6 2 0 7" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-linecap="round" />
+  </g>
+
+  <!-- Title & Subtitle Area -->
+  <g transform="translate(300, 520)">
+    <text x="0" y="0" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="800" fill="#f8fafc" letter-spacing="1">KOLEKSI BUKU</text>
+    <line x1="-60" y1="22" x2="60" y2="22" stroke="url(#accentGrad)" stroke-width="3" stroke-linecap="round" />
+    <text x="0" y="52" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="500" fill="#94a3b8" letter-spacing="0.5">SAMPUL DEFAULT PERPUSTAKAAN</text>
+    <text x="0" y="76" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="400" fill="#64748b">Edisi Terverifikasi</text>
+  </g>
+
+  <!-- Bottom Ribbons / Footer -->
+  <g transform="translate(300, 720)">
+    <text x="0" y="0" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#475569" letter-spacing="2">EDISI RESMI PERPUSTAKAAN MINI</text>
+  </g>
+</svg>

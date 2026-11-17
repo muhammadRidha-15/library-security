@@ -26,6 +26,7 @@ class StoreBookRequest extends FormRequest
             'judul' => ['required', 'string', 'min:1', 'max:255'],
             'penulis' => ['required', 'string', 'min:1', 'max:255'],
             'deskripsi' => ['nullable', 'string', 'max:2000'],
+            'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'stok_total' => ['required', 'integer', 'min:1', 'max:1000'],
         ];
     }
@@ -40,6 +41,9 @@ class StoreBookRequest extends FormRequest
         return [
             'judul.required' => 'Judul buku wajib diisi.',
             'penulis.required' => 'Nama penulis wajib diisi.',
+            'foto.image' => 'File sampul buku harus berupa gambar valid.',
+            'foto.mimes' => 'Format foto sampul yang diizinkan hanya JPEG, PNG, JPG, dan WEBP.',
+            'foto.max' => 'Ukuran foto sampul buku maksimal 2 MB.',
             'stok_total.required' => 'Jumlah stok total buku wajib diisi.',
             'stok_total.min' => 'Stok buku minimal 1 eksemplar.',
         ];

@@ -62,6 +62,7 @@ class DatabaseSeeder extends Seeder
             'judul' => 'Pemrograman Web Modern',
             'penulis' => 'John Doe',
             'deskripsi' => 'Panduan komprehensif pengembangan aplikasi web berbasis arsitektur modern.',
+            'foto' => 'images/books/pemrograman-web.svg',
             'stok_total' => 5,
             'stok_tersedia' => 5,
             'archived_at' => null,
@@ -71,6 +72,7 @@ class DatabaseSeeder extends Seeder
             'judul' => 'Dasar Keamanan Sistem',
             'penulis' => 'Jane Smith',
             'deskripsi' => 'Prinsip pertahanan berlapis, kriptografi terapan, dan mitigasi risiko perangkat lunak.',
+            'foto' => 'images/books/keamanan-sistem.svg',
             'stok_total' => 3,
             'stok_tersedia' => 3,
             'archived_at' => null,
@@ -80,6 +82,7 @@ class DatabaseSeeder extends Seeder
             'judul' => 'Buku Sejarah Lama',
             'penulis' => 'Arsiparis',
             'deskripsi' => 'Koleksi naskah sejarah khusus yang telah dialihkan ke status arsip.',
+            'foto' => null, // Menguji fallback ke default cover
             'stok_total' => 0,
             'stok_tersedia' => 0,
             'archived_at' => now(),

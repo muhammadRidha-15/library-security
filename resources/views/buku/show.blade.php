@@ -19,36 +19,49 @@
 
     {{-- Book Detail Card --}}
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-slate-100">
-            <div>
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md">
-                        Buku Perpustakaan
-                    </span>
-                    @if ($buku->stok_tersedia > 0)
-                        <span class="text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                            Tersedia
-                        </span>
-                    @else
-                        <span class="text-xs font-medium text-red-700 bg-red-50 border border-red-200 px-2.5 py-0.5 rounded-full">
-                            Stok Habis
-                        </span>
-                    @endif
-                </div>
-                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                    {{ $buku->judul }}
-                </h1>
-                <p class="mt-1 text-sm text-slate-600">
-                    Penulis: <span class="font-medium text-slate-800">{{ $buku->penulis }}</span>
-                </p>
+        <div class="flex flex-col sm:flex-row items-start gap-6 pb-6 border-b border-slate-100">
+            {{-- Book Cover --}}
+            <div class="w-full sm:w-44 md:w-48 shrink-0 aspect-[3/4] rounded-xl overflow-hidden shadow-md border border-slate-200 bg-slate-100 self-center sm:self-start">
+                <img
+                    src="{{ $buku->foto_url }}"
+                    alt="Sampul {{ $buku->judul }}"
+                    class="w-full h-full object-cover"
+                >
             </div>
 
-            {{-- Stock summary box --}}
-            <div class="sm:text-right bg-slate-50 border border-slate-200 rounded-xl p-4 shrink-0">
-                <span class="text-xs text-slate-500 font-medium block">Informasi Stok</span>
-                <div class="mt-1 flex items-baseline gap-1 sm:justify-end">
-                    <span class="text-2xl font-bold text-slate-900">{{ $buku->stok_tersedia }}</span>
-                    <span class="text-xs text-slate-500">/ {{ $buku->stok_total }} eksemplar</span>
+            <div class="flex-1 min-w-0">
+                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md">
+                                Buku Perpustakaan
+                            </span>
+                            @if ($buku->stok_tersedia > 0)
+                                <span class="text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                                    Tersedia
+                                </span>
+                            @else
+                                <span class="text-xs font-medium text-red-700 bg-red-50 border border-red-200 px-2.5 py-0.5 rounded-full">
+                                    Stok Habis
+                                </span>
+                            @endif
+                        </div>
+                        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+                            {{ $buku->judul }}
+                        </h1>
+                        <p class="mt-1 text-sm text-slate-600">
+                            Penulis: <span class="font-medium text-slate-800">{{ $buku->penulis }}</span>
+                        </p>
+                    </div>
+
+                    {{-- Stock summary box --}}
+                    <div class="sm:text-right bg-slate-50 border border-slate-200 rounded-xl p-4 shrink-0">
+                        <span class="text-xs text-slate-500 font-medium block">Informasi Stok</span>
+                        <div class="mt-1 flex items-baseline gap-1 sm:justify-end">
+                            <span class="text-2xl font-bold text-slate-900">{{ $buku->stok_tersedia }}</span>
+                            <span class="text-xs text-slate-500">/ {{ $buku->stok_total }} eksemplar</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

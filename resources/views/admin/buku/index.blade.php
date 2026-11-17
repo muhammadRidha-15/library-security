@@ -95,8 +95,18 @@
                     @forelse ($buku as $item)
                         <tr class="hover:bg-slate-50/75 transition">
                             <td class="px-6 py-4">
-                                <div class="font-bold text-slate-900">{{ $item->judul }}</div>
-                                <div class="text-xs text-slate-500">Penulis: {{ $item->penulis }}</div>
+                                <div class="flex items-center gap-3">
+                                    <img
+                                        src="{{ $item->foto_url }}"
+                                        alt=""
+                                        class="w-10 h-14 object-cover rounded-md border border-slate-200 shrink-0 bg-slate-100 shadow-xs"
+                                        loading="lazy"
+                                    >
+                                    <div>
+                                        <div class="font-bold text-slate-900">{{ $item->judul }}</div>
+                                        <div class="text-xs text-slate-500">Penulis: {{ $item->penulis }}</div>
+                                    </div>
+                                </div>
                             </td>
                             <td class="px-6 py-4 text-center font-semibold text-slate-800 text-xs">
                                 {{ $item->stok_total }}

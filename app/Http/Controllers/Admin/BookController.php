@@ -9,6 +9,7 @@ use App\Models\Buku;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class BookController extends Controller
@@ -69,10 +70,16 @@ class BookController extends Controller
 
         $validated = $request->validated();
 
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('covers', 'public');
+        }
+
         $buku = Buku::create([
             'judul' => $validated['judul'],
             'penulis' => $validated['penulis'],
             'deskripsi' => $validated['deskripsi'] ?? null,
+            'foto' => $fotoPath,
             'stok_total' => (int) $validated['stok_total'],
             'stok_tersedia' => (int) $validated['stok_total'],
             'archived_at' => null,
@@ -119,10 +126,27 @@ class BookController extends Controller
         $borrowedCount = $buku->peminjaman()->where('status', 'dipinjam')->count();
         $newAvailable = $newTotal - $borrowedCount;
 
+        $fotoPath = $buku->foto;
+
+        if ($request->boolean('hapus_foto')) {
+            if ($buku->foto && Storage::disk('public')->exists($buku->foto)) {
+                Storage::disk('public')->delete($buku->foto);
+            }
+            $fotoPath = null;
+        }
+
+        if ($request->hasFile('foto')) {
+            if ($buku->foto && Storage::disk('public')->exists($buku->foto)) {
+                Storage::disk('public')->delete($buku->foto);
+            }
+            $fotoPath = $request->file('foto')->store('covers', 'public');
+        }
+
         $buku->update([
             'judul' => $validated['judul'],
             'penulis' => $validated['penulis'],
             'deskripsi' => $validated['deskripsi'] ?? null,
+            'foto' => $fotoPath,
             'stok_total' => $newTotal,
             'stok_tersedia' => $newAvailable,
         ]);

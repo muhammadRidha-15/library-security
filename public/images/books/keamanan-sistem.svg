@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
+  <defs>
+    <linearGradient id="secBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="40%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="secSpine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="70%" stop-color="#ffffff" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.4" />
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#4f46e5" />
+    </linearGradient>
+    <filter id="secGlow">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="600" height="800" rx="16" fill="url(#secBg)" />
+
+  <!-- Security Circuit Pattern Background -->
+  <g opacity="0.1" stroke="#818cf8" stroke-width="1.5" fill="none">
+    <path d="M 60 100 L 140 100 L 180 140 L 260 140" />
+    <circle cx="260" cy="140" r="4" fill="#818cf8" />
+    <path d="M 540 200 L 460 200 L 420 240 L 380 240" />
+    <circle cx="380" cy="240" r="4" fill="#818cf8" />
+    <path d="M 80 680 L 160 680 L 200 640 L 300 640" />
+    <circle cx="300" cy="640" r="4" fill="#818cf8" />
+  </g>
+
+  <!-- Left Spine -->
+  <rect x="0" y="0" width="36" height="800" rx="4" fill="url(#secSpine)" />
+  <line x1="36" y1="0" x2="36" y2="800" stroke="#000000" stroke-width="2" stroke-opacity="0.5" />
+
+  <!-- Borders -->
+  <rect x="24" y="24" width="552" height="752" rx="12" fill="none" stroke="#4338ca" stroke-width="1.5" stroke-opacity="0.6" />
+
+  <!-- Category Pill -->
+  <g transform="translate(300, 120)">
+    <rect x="-80" y="-16" width="160" height="32" rx="16" fill="#4338ca" fill-opacity="0.3" stroke="#818cf8" stroke-width="1" />
+    <text x="0" y="5" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#a5b4fc" letter-spacing="2">CYBER SECURITY</text>
+  </g>
+
+  <!-- Central Graphic: Shield & Keyhole -->
+  <g transform="translate(300, 290)">
+    <circle cx="0" cy="0" r="95" fill="#1e1b4b" stroke="#4338ca" stroke-width="2" />
+    <circle cx="0" cy="0" r="82" fill="none" stroke="#6366f1" stroke-width="1" stroke-dasharray="6 4" />
+    
+    <!-- Shield -->
+    <path d="M 0 -45 L 38 -25 C 38 25 15 50 0 60 C -15 50 -38 25 -38 -25 Z" 
+          fill="url(#shieldGrad)" stroke="#c7d2fe" stroke-width="2.5" filter="url(#secGlow)" />
+    <!-- Lock / Keyhole inside shield -->
+    <circle cx="0" cy="0" r="8" fill="#ffffff" />
+    <path d="M -3 0 L 3 0 L 5 18 L -5 18 Z" fill="#ffffff" />
+  </g>
+
+  <!-- Title & Author -->
+  <g transform="translate(300, 500)">
+    <text x="0" y="0" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="900" fill="#ffffff" letter-spacing="0.5">DASAR KEAMANAN</text>
+    <text x="0" y="38" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="900" fill="#818cf8" letter-spacing="0.5">SISTEM</text>
+    <line x1="-50" y1="64" x2="50" y2="64" stroke="#c7d2fe" stroke-width="3" stroke-linecap="round" />
+    <text x="0" y="105" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#e2e8f0">Jane Smith</text>
+    <text x="0" y="130" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="400" fill="#94a3b8">Kriptografi, Pertahanan Berlapis &amp; Audit Risiko</text>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(300, 725)">
+    <text x="0" y="0" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#6366f1" letter-spacing="3">EDISI KHUSUS PERPUSTAKAAN</text>
+  </g>
+</svg>

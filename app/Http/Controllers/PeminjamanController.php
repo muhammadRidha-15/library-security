@@ -66,8 +66,9 @@ class PeminjamanController extends Controller
      */
     public function show(Peminjaman $peminjaman): View
     {
-        // SEC-10: Memeriksa policy pemilik. Tolak dengan 404 jika bukan milik user
-        Gate::authorize('view', $peminjaman);
+        // VULNERABLE BRANCH: IDOR vulnerability - authorization policy bypassed (TKT-25 / SEC-10)
+        // Main branch enforces: Gate::authorize('view', $peminjaman); -> aborts with 404 denyAsNotFound
+        // Gate::authorize('view', $peminjaman);
 
         $peminjaman->load(['buku', 'anggota']);
 

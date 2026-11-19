@@ -48,7 +48,9 @@ class LoginController extends Controller
 
         RateLimiter::clear($throttleKey);
 
-        $request->session()->regenerate();
+        // VULNERABLE BRANCH: Session fixation vulnerability - session ID not regenerated upon login (TKT-25 / SEC-10)
+        // Main branch enforces: $request->session()->regenerate();
+        // $request->session()->regenerate();
 
         if ($request->user()->role === 'admin') {
             return redirect()->intended('/admin/buku');

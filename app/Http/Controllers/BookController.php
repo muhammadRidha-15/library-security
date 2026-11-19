@@ -37,12 +37,10 @@ class BookController extends Controller
             return redirect()->route('buku.index');
         }
 
+        // VULNERABLE BRANCH: Raw SQL concatenation for demonstrative comparison with main (TKT-23 / SEC-08)
         $buku = Buku::query()
             ->whereNull('archived_at')
-            ->where(function ($qb) use ($query) {
-                $qb->where('judul', 'like', "%{$query}%")
-                   ->orWhere('penulis', 'like', "%{$query}%");
-            })
+            ->whereRaw("judul LIKE '%" . $query . "%' OR penulis LIKE '%" . $query . "%'")
             ->orderBy('judul')
             ->get();
 

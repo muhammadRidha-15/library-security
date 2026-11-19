@@ -195,7 +195,8 @@
                             </span>
                         </div>
                         <div class="text-sm text-slate-700 leading-relaxed break-words">
-                            {{ $ulasan->isi }}
+                            {{-- VULNERABLE BRANCH: Raw HTML render without Blade escaping for stored XSS demo (TKT-24 / SEC-09) --}}
+                            {!! $ulasan->isi !!}
                         </div>
                     </div>
                 @endforeach

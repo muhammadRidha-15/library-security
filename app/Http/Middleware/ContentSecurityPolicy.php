@@ -15,9 +15,8 @@ class ContentSecurityPolicy
     {
         $response = $next($request);
 
-        $csp = "default-src 'self'; script-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.bunny.net; font-src 'self' https://fonts.bunny.net;";
-
-        $response->headers->set('Content-Security-Policy', $csp);
+        // VULNERABLE BRANCH: Disable restrictive CSP so XSS alert popup executes in browser (TKT-24 / SEC-09)
+        // Main branch enforces: "default-src 'self'; script-src 'self'; object-src 'none'..."
 
         return $response;
     }
